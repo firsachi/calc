@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import calc.messages.Message;
+
 /**
  * Servlet implementation class Result
  */
@@ -28,23 +30,29 @@ public class Result extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int firstValue = new Integer(((String) request.getSession().getAttribute("masterValue")).trim()) ;
 		int secondValue = new Integer(((String) request.getSession().getAttribute("counter")).trim());
+		String result = null;
 		switch ((String) request.getSession().getAttribute("action")) {
 			case "/":
-				secondValue = firstValue / secondValue;
+				if (0==secondValue){
+					result = Message.ERROR_DIVIDE_ZERO;
+					break;
+				}
+				result = Integer.toString(firstValue / secondValue);
 			break;
 			case "-":
-				secondValue = firstValue - secondValue;
+				result = Integer.toString(firstValue - secondValue);
 			break;
 			case "*":
-				secondValue = firstValue * secondValue;
+				result = Integer.toString(firstValue * secondValue);
 			break;
 			case "+":
-				secondValue = firstValue + secondValue;
+				result = Integer.toString(firstValue + secondValue);
 			break;
 		}
+		
 		request.getSession().removeAttribute("masterValue");
 		request.getSession().removeAttribute("action");
-		request.getSession().setAttribute("counter", secondValue);
+		request.getSession().setAttribute("counter", result);
 		response.sendRedirect("/calc");
 	}
 
